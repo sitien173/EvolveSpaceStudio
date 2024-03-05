@@ -23,6 +23,7 @@
 	<link rel="stylesheet" href="css/aos.css">
 	<link rel="stylesheet" href="css/glightbox.min.css">
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
 	<title>1531 STUDIO.</title>
 </head>
@@ -136,7 +137,7 @@
 				</div>
 
 				<div class="col-md-12">
-					<input type="submit" value="Send message" class="btn btn-primary">
+					<input id="submit" type="submit" value="Send message" class="btn btn-primary">
 				</div>
 
 			</form>
@@ -229,12 +230,30 @@
 	<script src="js/counter.js"></script>
 	<script src="js/custom.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.3/dist/email.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 	<script type="text/javascript">
 		(function () {
 				emailjs.init("Ke-H9tipICh0HLD6s");
 			})();
+
+		const toast = Toastify({
+			text: "Your Email has been Successfully Sent",
+			duration: 3000,
+			destination: "https://mail.google.com",
+			newWindow: true,
+			close: true,
+			gravity: "top", // `top` or `bottom`
+			position: "right", // `left`, `center` or `right`
+			stopOnFocus: true, // Prevents dismissing of toast on hover
+			style: {
+				background: "linear-gradient(to right, #00b09b, #96c93d)",
+			},
+			onClick: function () { } // Callback after click
+		});
+
 		document.querySelector("form").addEventListener("submit", function (event) {
 			event.preventDefault(); // Prevent form submission
+			document.getElementById("submit").setAttribute("disabled", "");
 
 			// Extract values from the form
 			var name = document.querySelector("#name").value;
@@ -254,14 +273,7 @@
 			var serviceID = "service_rx3hkfs"; // Email Service ID
 			var templateIDAdmin = "template_9e33qt7"; // Email Template ID
 
-			emailjs.send(serviceID, templateIDAdmin, paramsAdmin)
-				.then(function (response) {
-					console.log('SUCCESS!', response.status, response.text);
-					// Here you can add any code to handle success, like showing a success message
-				}, function (error) {
-					console.log('FAILED...', error);
-					// Here you can add any code to handle errors, like showing an error message
-				});
+			emailjs.send(serviceID, templateIDAdmin, paramsAdmin);
 
 			var paramsCustomer = {
 				to_name: name,
@@ -273,11 +285,10 @@
 			var templateIDCustomer = "template_d2ylc3a"; // Email Template ID
 			emailjs.send(serviceID, templateIDCustomer, paramsCustomer)
 				.then(function (response) {
-					console.log('SUCCESS!', response.status, response.text);
-					// Here you can add any code to handle success, like showing a success message
+					toast.showToast();
+					document.getElementById("submit").removeAttribute('disabled');
 				}, function (error) {
-					console.log('FAILED...', error);
-					// Here you can add any code to handle errors, like showing an error message
+					alert('Email sent error, please contact me via phone number');
 				});
 		});
 	</script>
